@@ -1,10 +1,10 @@
-package ch.zuehlke.szil;
-
-import java.awt.Color;
-import java.util.Random;
+package ch.zuehlke.bots.examples.szil;
 
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
+
+import java.awt.*;
+import java.util.Random;
 
 import static ch.zuehlke.helpers.Helper.absbearing;
 import static ch.zuehlke.helpers.Helper.normaliseBearing;

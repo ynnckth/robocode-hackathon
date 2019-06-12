@@ -1,4 +1,4 @@
-package ch.zuehlke.set;
+package ch.zuehlke.bots.examples.set;
 
 import ch.zuehlke.helpers.Helper;
 import robocode.Robot;

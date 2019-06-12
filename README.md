@@ -14,7 +14,8 @@ The goal of this repository is to have a very fast setup for a RoboCode hacking 
     ![DevelopmentOptions](doc/DevelopmentOptionsConfig.png)
 5. Restart Robocode from IntelliJ
 6. You are now ready to code!
-7. Start coding your bot under `ch.zuehlke.<your-team>`
+7. Start coding your bot at `ch.zuehlke.bots.<your-team>`. You can find examples in the `bots` package.
+
 
 ## Further links and documentation
 - Official site with further reading material: [https://robocode.sourceforge.io](https://robocode.sourceforge.io)

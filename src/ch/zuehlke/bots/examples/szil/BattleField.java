@@ -1,4 +1,4 @@
-package ch.zuehlke.szil;
+package ch.zuehlke.bots.examples.szil;
 
 public class BattleField {
 
