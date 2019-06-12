@@ -1,10 +1,15 @@
 # Robocode Challenge
+*Fast setup for a RoboCode hacking challenge in the Intellij IDE*
 
 ![Teser](doc/robocode.png)
 
-The goal of this repository is to have a very fast setup for a RoboCode hacking challenge in Intellij.
+## Prerequisites
 
-## Steps required to start
+- Intellij IDEA
+- Java 8 (tested with this version, maybe newer version works as well)
+- Coffee
+
+## Setup
 
 1. Check out the repository
 2. Make sure, that the Project SDK is configured correctly in Intellij under `File > Project Structure` (tested with Java 8)
