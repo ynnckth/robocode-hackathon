@@ -12,13 +12,11 @@ The goal of this repository is to have a very fast setup for a RoboCode hacking 
 4. In the Robocode window go to `Options > Preferences > Development Options`
    and set the correct paths to the directories as in the picture below. Usually you need to remove all entries and re-add them:
     ![DevelopmentOptions](doc/DevelopmentOptionsConfig.png)
-    ```
-    ./dist/robots
-    ./out/production/RoboCodeChallenge
-    ```
 5. Restart Robocode from IntelliJ
-6. You are now ready!
+6. You are now ready to code!
+7. Start coding your bot under `ch.zuehlke.<your-team>`
 
-## Further links and documentation}
-- Official side with further Reading [https://robocode.sourceforge.io](https://robocode.sourceforge.io)
-- Documentation [https://robocode.sourceforge.io/docs/robocode/](https://robocode.sourceforge.io/docs/robocode/)
+## Further links and documentation
+- Official site with further reading material: [https://robocode.sourceforge.io](https://robocode.sourceforge.io)
+- Wiki: [http://robowiki.net/wiki/Robocode](http://robowiki.net/wiki/Robocode)
+- Javadoc: [https://robocode.sourceforge.io/docs/robocode/](https://robocode.sourceforge.io/docs/robocode/)
