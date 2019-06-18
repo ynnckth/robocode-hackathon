@@ -23,6 +23,7 @@
 
 
 ## Further links and documentation
+- Getting Started: [http://robowiki.net/wiki/Robocode/My_First_Robot](http://robowiki.net/wiki/Robocode/My_First_Robot)
 - Official site with further reading material: [https://robocode.sourceforge.io](https://robocode.sourceforge.io)
 - Wiki: [http://robowiki.net/wiki/Robocode](http://robowiki.net/wiki/Robocode)
 - Javadoc: [https://robocode.sourceforge.io/docs/robocode/](https://robocode.sourceforge.io/docs/robocode/)
