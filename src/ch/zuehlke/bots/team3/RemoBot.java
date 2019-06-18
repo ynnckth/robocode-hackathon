@@ -2,6 +2,7 @@ package ch.zuehlke.bots.team3;
 
 import ch.zuehlke.helpers.Helper;
 import robocode.AdvancedRobot;
+import robocode.util.Utils;
 
 import java.awt.*;
 import java.util.*;
@@ -37,7 +38,7 @@ public class RemoBot extends AdvancedRobot {
         if (targetPosition == null) {
             targetPosition = findClosestCorner();
         }
-
+        goTo(targetPosition.x, targetPosition.y);
     }
 
     private Position findClosestCorner() {
@@ -74,5 +75,20 @@ public class RemoBot extends AdvancedRobot {
 
     private void initializeField() {
         this.field = new Field(getBattleFieldHeight(), getBattleFieldWidth(), getSentryBorderSize());
+    }
+
+    private void goTo(double x, double y) {
+        x -= getX();
+        y -= getY();
+        double angleToTarget = Math.atan2(x, y);
+        double targetAngle = Utils.normalRelativeAngle(angleToTarget - getHeadingRadians());
+        double distance = Math.hypot(x, y);
+        double turnAngle = Math.atan(Math.tan(targetAngle));
+        setTurnRightRadians(turnAngle);
+        if(targetAngle == turnAngle) {
+            setAhead(distance);
+        } else {
+            setBack(distance);
+        }
     }
 }
