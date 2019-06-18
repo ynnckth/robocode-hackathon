@@ -10,12 +10,12 @@ import java.awt.*;
 import java.util.Random;
 
 
-public class AndresBot extends AdvancedRobot {
+public class AndresAggressor extends AdvancedRobot {
 
     private Location scannedLocation = null;
     private Location destination = null;
 
-    private static int averageMovesUntilDestinationChanges = 5;
+    private static int averageMovesUntilDestinationChanges = 10;
 
     class Location {
         int x;
@@ -36,14 +36,19 @@ public class AndresBot extends AdvancedRobot {
 
 
     public void run() {
-        // Set colors
         setRadarColor(Color.black);
         setScanColor(Color.yellow);
 
-        // Loop forever
         while (true) {
             battle();
         }
+    }
+
+    private void battle() {
+        setNewColors();
+        drive();
+        scan();
+        execute();
     }
 
     private void drive() {
@@ -75,9 +80,8 @@ public class AndresBot extends AdvancedRobot {
         destinationY += getSentryBorderSize();
         destination = new Location(destinationX, destinationY);
         System.out.println("Destination: " + String.valueOf(destination.x) + " : " + String.valueOf(destination.y));
-        assert(destination.isInSentryRange());
+        assert (destination.isInSentryRange());
     }
-
 
 
     private boolean shouldMoveTowardsScannedRobot() {
@@ -88,7 +92,14 @@ public class AndresBot extends AdvancedRobot {
     }
 
     private boolean shouldChooseNewDestination() {
+        if (isCloseToDestination()) {
+            return true;
+        }
         return rand.nextInt() % averageMovesUntilDestinationChanges == 0;
+    }
+
+    private boolean isCloseToDestination() {
+        return Helper.getDistance(destination.x, destination.y, getX(), getY()) < 2.0;
     }
 
     private boolean isFirstDestinationCalculation() {
@@ -107,22 +118,12 @@ public class AndresBot extends AdvancedRobot {
         setAhead(Math.hypot(x, y) * Math.cos(a));
     }
 
-
-    //Turns the shortest angle possible to come to a heading, then returns the direction the
-    //the bot needs to move in.
-
-    private void battle() {
-        setNewColors();
-        drive();
-        scan();
-        execute();
-    }
-
     private static Random rand = new Random();
+
     private void setNewColors() {
-        setBodyColor(new Color(rand.nextInt()%24));
-        setGunColor(new Color(rand.nextInt()%24));
-        setBulletColor(new Color(rand.nextInt()%24));
+        setBodyColor(new Color(rand.nextInt() % 24));
+        setGunColor(new Color(rand.nextInt() % 24));
+        setBulletColor(new Color(rand.nextInt() % 24));
     }
 
     /**
@@ -131,15 +132,14 @@ public class AndresBot extends AdvancedRobot {
     public void onScannedRobot(ScannedRobotEvent e) {
         if (!e.isSentryRobot()) {
             double angle = Math.toRadians((getHeading() + e.getBearing()) % 360);
-            int scannedX = (int)(getX() + Math.sin(angle) * e.getDistance());
-            int scannedY = (int)(getY() + Math.cos(angle) * e.getDistance());
+            int scannedX = (int) (getX() + Math.sin(angle) * e.getDistance());
+            int scannedY = (int) (getY() + Math.cos(angle) * e.getDistance());
             scannedLocation = new Location(scannedX, scannedY);
-            double absoluteBearing = this.getHeading() + e.getBearing();
-            double bearingFromGun = Utils.normalRelativeAngleDegrees(absoluteBearing - this.getGunHeading());
+            double bearingFromGun = getBearingFromGun(e.getBearing());
             if (Math.abs(bearingFromGun) <= 3.0D) {
-                this.turnGunRight(bearingFromGun);
+                this.turnRight(bearingFromGun);
                 if (this.getGunHeat() == 0.0D) {
-                    this.fire(Math.min(3.0D - Math.abs(bearingFromGun), this.getEnergy() - 0.1D));
+                    this.fire(getFirePower());
                 }
             } else {
                 this.turnGunRight(bearingFromGun);
@@ -153,27 +153,19 @@ public class AndresBot extends AdvancedRobot {
         }
     }
 
-    /**
-     * onHitRobot:  If it's our fault, we'll stop turning and moving,
-     * so we need to turn again to keep spinning.
-     */
-    public void onHitRobot(HitRobotEvent e) {
+    private double getBearingFromGun(double bearing) {
+        double absoluteBearing = this.getHeading() + bearing;
+        return Utils.normalRelativeAngleDegrees(absoluteBearing - this.getGunHeading());
+    }
 
-        this.turnRight(e.getBearing());
-        if (e.getEnergy() > 16.0D) {
-            this.fire(3.0D);
-        } else if (e.getEnergy() > 10.0D) {
-            this.fire(2.0D);
-        } else if (e.getEnergy() > 4.0D) {
-            this.fire(1.0D);
-        } else if (e.getEnergy() > 2.0D) {
-            this.fire(0.5D);
-        } else if (e.getEnergy() > 0.4D) {
-            this.fire(0.1D);
-        }
-
-        if ((rand.nextInt() % 3) == 0) battle();
+    private double getFirePower() {
+        return Math.min(3.0D * (getEnergy() / 100.0), this.getEnergy() - 0.1D);
     }
 
 
+    public void onHitRobot(HitRobotEvent e) {
+        this.turnGunRight(getBearingFromGun(e.getBearing()));
+        this.fire(3.0);
+        battle();
+    }
 }
