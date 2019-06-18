@@ -3,8 +3,12 @@ package ch.zuehlke.bots.team2;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
+
+import java.awt.*;
+
 import static ch.zuehlke.helpers.Helper.absbearing;
 import static ch.zuehlke.helpers.Helper.normaliseBearing;
+import static ch.zuehlke.helpers.Helper.getRandomIntInclusiveInRange;
 
 public class YastBot extends AdvancedRobot {
 
@@ -16,33 +20,40 @@ public class YastBot extends AdvancedRobot {
         BATTLEFIELD_CENTER_X = getBattleFieldWidth() / 2;
         BATTLEFIELD_CENTER_Y = getBattleFieldHeight() / 2;
 
+        setBodyColor(Color.BLACK);
+        setGunColor(Color.BLACK);
+        setRadarColor(Color.BLACK);
+
         while (true) {
-            // TODO: find center and drive towards it
             moveTowardsBattlefieldCenter();
-            orbitBattlefieldCenter();
+            doRandomStuff();
 
             execute();
         }
     }
 
     private void moveTowardsBattlefieldCenter() {
-        System.out.println("Reached center: " + isWithinBattlefieldCenterRange());
         if (!isWithinBattlefieldCenterRange()) {
             moveTo(BATTLEFIELD_CENTER_X, BATTLEFIELD_CENTER_Y);
         }
     }
 
-    private boolean isWithinBattlefieldCenterRange() {
-        double tolerance = 20;
-        return (getX() < BATTLEFIELD_CENTER_X - tolerance && getX() > BATTLEFIELD_CENTER_X + tolerance)
-                && (getY() < BATTLEFIELD_CENTER_Y - tolerance && getY() > BATTLEFIELD_CENTER_Y + tolerance);
+    private void doRandomStuff() {
+        if (isWithinBattlefieldCenterRange()) {
+            setAhead(100);
+            turnGunRight(getRandomIntInclusiveInRange(-60, 60));
+            if (getRandomIntInclusiveInRange(0, 100) > 50) {
+                turnRight(90);
+            } else {
+                turnLeft(90);
+            }
+        }
     }
 
-    // TODO: drive in circles around center
-    private void orbitBattlefieldCenter() {
-        // if (isWithinBattlefieldCenterRange()) {
-        turnGunRight(360);
-        // }
+    private boolean isWithinBattlefieldCenterRange() {
+        double tolerance = 100;
+        return (getX() < BATTLEFIELD_CENTER_X + tolerance && getX() > BATTLEFIELD_CENTER_X - tolerance)
+                && (getY() < BATTLEFIELD_CENTER_Y + tolerance && getY() > BATTLEFIELD_CENTER_Y - tolerance);
     }
 
     private void moveTo(double x, double y) {
@@ -69,8 +80,9 @@ public class YastBot extends AdvancedRobot {
         return dir;
     }
 
-
     public void onScannedRobot(ScannedRobotEvent e) {
-        fire(1);
+        if (e.getDistance() < 300 && getGunHeat() < 1) {
+            fire(1);
+        }
     }
 }

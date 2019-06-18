@@ -1,5 +1,7 @@
 package ch.zuehlke.helpers;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import static java.lang.Math.PI;
 
 public class Helper {
@@ -50,4 +52,7 @@ public class Helper {
         return 0;
     }
 
+    public static int getRandomIntInclusiveInRange(int min, int max) {
+        return ThreadLocalRandom.current().nextInt(min, max + 1);
+    }
 }
