@@ -12,6 +12,9 @@ public class RaphaelBot extends AdvancedRobot {
     private double width;
 
     public void run() {
+        //setAdjustGunForRobotTurn(true);
+        //setAdjustRadarForGunTurn(true);
+
         height = getBattleFieldHeight();
         width = getBattleFieldWidth();
         int borderSize = getSentryBorderSize();
@@ -25,19 +28,15 @@ public class RaphaelBot extends AdvancedRobot {
         setScanColor(new Color(255, 200, 200));
 
         while (true) {
-
-
             if (!isInBorderArea(reducedFieldXMax, reducedFieldYMax, borderSize)) {
-                turnTo(makeStraight((int) getHeading()));
+                turnTo(makeStraight((int) getHeading()) + 20);
+                turnLeft(20);
                 ahead(80);
-                //turnRight(20);
             } else {
-                goTo(width / 2, height / 2, 110);
-                turnRight(100);
-                //boolean wasMovingForward = goTo(height / 2, width / 2, width / 8);
-                //if (!wasMovingForward) {
-                //    turnLeft(20);
-                //}
+                boolean wasMovingForward = goTo(width / 2, height / 2, 110);
+                if (!wasMovingForward) {
+                    turnLeft(100);
+                }
             }
 
             //ahead(100);
@@ -86,17 +85,13 @@ public class RaphaelBot extends AdvancedRobot {
 
     private double turnGunTo(double angle) {
         double ang;
-        boolean forward;
-        ang = Helper.normaliseBearing(getGunHeading() - angle);
+        ang = Helper.normaliseBearing(getHeading() - angle);
         if (ang > 90) {
             ang -= 180;
-            forward = false;
         } else if (ang < -90) {
             ang += 180;
-            forward = false;
-        } else {
-            forward = true;
         }
+        turnGunLeft(ang);
         return ang;
     }
 
@@ -117,14 +112,32 @@ public class RaphaelBot extends AdvancedRobot {
     public void onScannedRobot(ScannedRobotEvent e) {
 
         double dist = e.getDistance();
-        if (dist > height / 2) {
+        if (dist > 0.65  * height) {
+            return;
+        }
+
+        if (e.getName().contains("Guard")) {
+            boolean wasMovingForward = goTo(width / 2, height / 2, 110);
+            if (!wasMovingForward) {
+                turnLeft(100);
+            }
+            return;
+        }
+
+        if (e.getName().contains("Wall")) {
+            boolean wasMovingForward = goTo(width / 2, height / 2, 110);
+            if (!wasMovingForward) {
+                turnLeft(100);
+            }
             return;
         }
 
         //turnTo(e.getBearing());
         if (dist < 300) {
             if (!isTired()) {
-                turnGunTo(e.getBearing());
+                turnGunTo(e.getBearing() + getHeading());
+
+                //turnTo(e.getBearing());
                 fire(1);
             }
         }
