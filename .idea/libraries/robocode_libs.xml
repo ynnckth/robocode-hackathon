@@ -5,6 +5,18 @@
       <root url="jar://$PROJECT_DIR$/dist/libs/robocode.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/dist/libs/robocode.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dist/libs/codesize-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dist/libs/picocontainer-2.14.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dist/libs/robocode.battle-1.9.3.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dist/libs/robocode.core-1.9.3.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dist/libs/robocode.host-1.9.3.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dist/libs/robocode.repository-1.9.3.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dist/libs/robocode.sound-1.9.3.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dist/libs/robocode.ui-1.9.3.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dist/libs/robocode.ui.editor-1.9.3.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dist/libs/roborumble.jar!/" />
+    </SOURCES>
   </library>
 </component>
