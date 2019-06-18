@@ -1,24 +1,23 @@
 package ch.zuehlke.bots.team10;
 
-import robocode.*;
+import robocode.AdvancedRobot;
+import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import static ch.zuehlke.helpers.Helper.absbearing;
 import static ch.zuehlke.helpers.Helper.normaliseBearing;
 
 public class SteffisRobot extends AdvancedRobot {
 
-    static Stack<Object> nextMoves;
+    static Stack<Move> nextMoves;
     static Map<String, ScannedRobotEvent> enemyRobots = new HashMap<>();
 
-
-    double battleFieldHeight = getBattleFieldHeight();
-    double battleFieldWidth = getBattleFieldWidth();
-    int sentryBorderSize = getSentryBorderSize();
+    double battleFieldHeight;
+    double battleFieldWidth;
+    int sentryBorderSize;
 
     private class Move {
         double gun;
@@ -33,15 +32,24 @@ public class SteffisRobot extends AdvancedRobot {
     public void run() {
         setAdjustGunForRobotTurn(true);
         setAdjustRadarForGunTurn(true);
+        battleFieldHeight = getBattleFieldHeight();
+        battleFieldWidth = getBattleFieldWidth();
+        sentryBorderSize = getSentryBorderSize();
         while(true) {
             setTurnRadarRight(Double.POSITIVE_INFINITY);
-
-
-            ahead(100);
+            aheadIfNotInBorder(100);
             turnGunRight(360);
-            back(100);
+            backIfNotInBorder(100);
             turnGunRight(360);
         }
+    }
+
+    private void backIfNotInBorder(int i) {
+        back(i);
+    }
+
+    private void aheadIfNotInBorder(int i) {
+        ahead(i);
     }
 
     public void onScannedRobot(ScannedRobotEvent e) {
@@ -54,6 +62,8 @@ public class SteffisRobot extends AdvancedRobot {
 
         fire(1);
         enemyRobots.put(name, e);
+        System.out.println("Scanned enemy: " + name + " with energy " + n_energy + ", heading "
+                + n_heading + ", bearing " + n_bearing + ", distance " + n_distance + ", velocity " + n_velocity);
     }
 
 
