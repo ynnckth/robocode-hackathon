@@ -1,6 +1,7 @@
 package ch.zuehlke.bots.team10;
 
 import robocode.AdvancedRobot;
+import robocode.BulletHitEvent;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
@@ -19,6 +20,9 @@ public class SteffisRobot extends AdvancedRobot {
     double battleFieldWidth;
     int sentryBorderSize;
 
+    int x_coord;
+    int y_coord;
+
     private class Move {
         double gun;
         double radar;
@@ -36,11 +40,15 @@ public class SteffisRobot extends AdvancedRobot {
         battleFieldWidth = getBattleFieldWidth();
         sentryBorderSize = getSentryBorderSize();
         while(true) {
+            x_coord = (int) getX();
+            y_coord = (int) getY();
+
             setTurnRadarRight(Double.POSITIVE_INFINITY);
-            aheadIfNotInBorder(100);
-            turnGunRight(360);
-            backIfNotInBorder(100);
-            turnGunRight(360);
+            moveDistanceIfNotInBorder(50, 50);
+            turnGunRight(Utils.normalRelativeAngleDegrees(90));
+            moveDistanceIfNotInBorder(-50, -50);
+            turnGunRight(Utils.normalRelativeAngleDegrees(90));
+            execute();
         }
     }
 
@@ -48,11 +56,24 @@ public class SteffisRobot extends AdvancedRobot {
         back(i);
     }
 
-    private void aheadIfNotInBorder(int i) {
-        ahead(i);
+    private boolean moveDistanceIfNotInBorder(int x, int y) {
+        if(isInBorder(x_coord+x, y_coord+y)){
+            return false;
+        }
+        else {
+            goTo(x_coord+x, y_coord+y);
+            return true;
+        }
+    }
+
+    private boolean isInBorder(double x, double y){
+        return (x > sentryBorderSize && x < battleFieldWidth-sentryBorderSize) && (y > sentryBorderSize && y < battleFieldHeight-sentryBorderSize);
     }
 
     public void onScannedRobot(ScannedRobotEvent e) {
+        if(e.isSentryRobot()){
+            return;
+        }
         String name = e.getName();
         double n_energy = e.getEnergy();
         double n_velocity = e.getVelocity();
@@ -60,18 +81,35 @@ public class SteffisRobot extends AdvancedRobot {
         double n_heading = e.getHeading();
         double n_distance = e.getDistance();
 
-        fire(1);
+        if(firedBullet(enemyRobots.get(name).getEnergy(), n_energy)){
+            moveRandomly();
+        }
+
+        if(n_distance < battleFieldWidth / 3 && getEnergy() > 10) {
+            turnTo(e.getBearing());
+            fire(3);
+        }
         enemyRobots.put(name, e);
         System.out.println("Scanned enemy: " + name + " with energy " + n_energy + ", heading "
                 + n_heading + ", bearing " + n_bearing + ", distance " + n_distance + ", velocity " + n_velocity);
     }
 
+    public void onBulletHit(BulletHitEvent e) {
+        moveRandomly();
+    }
+
+    private void moveRandomly() {
+        int rand_x = (int) (10 * Math.random());
+        int rand_y = (int) (10 * Math.random());
+        if(!isInBorder(x_coord + rand_x, y_coord + rand_y)) {
+            go(x_coord + rand_x, y_coord);
+        }
+    }
 
     public boolean firedBullet(double previousLifePower, double currentLifePower) {
         double lifePowerDrop = previousLifePower-currentLifePower;
         return (lifePowerDrop >= 0.1 && lifePowerDrop <= 3.0);
     }
-
 
   //  This method should be called every round
     private void goTo(int x, int y) {
